@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ user_manager.USER_APP_NAME }}</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="icon" href="{{url_for('static', filename='img/logo.ico')}}">
+    {# *** Allow sub-templates to insert extra html to the head section *** #}
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    {% block body %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between pl-5 pr-5">
+        <a class="navbar-brand" href="/"><img src="{{url_for('static', filename='img/logo.png')}}" width="120">
+            <h1 class="d-inline">{{ user_manager.USER_APP_NAME }}</h1>
+        </a>
+        <ul class="navbar-nav">
+            {% if call_or_get(current_user.is_authenticated) %}
+            <li class="nav-item dropdown">
+                <a class="nav-item nav-link dropdown-toggle btn-primary pr-3 pl-3" id="navbarDropdown" href="#"
+                    data-toggle="dropdown">
+                    <img src="/static/img/usericons/Icon ({{ current_user.icon }}).png" alt="User Icon" width="80"
+                        class="pr-3"> {{ current_user.username or current_user.email }}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item active"
+                        href="{{ url_for('main.view_profile', id=current_user.id) }}">{%trans%}View
+                        Profile{%endtrans%}</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item active" href="{{ url_for('main.change_icon') }}">{%trans%}Change
+                        Icon{%endtrans%}</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item active" href="{{ url_for('user.change_username') }}">{%trans%}Change
+                        username{%endtrans%}</a>
+                    <div class=" dropdown-divider"></div>
+                    <a class=" dropdown-item active" href="{{ url_for('user.change_password') }}">{%trans%}Change
+                        Password{%endtrans%}</a>
+                    <div class=" dropdown-divider"></div>
+                    <a class="dropdown-item active" href="{{ url_for('user.logout') }}">{%trans%}Sign
+                        out{%endtrans%}</a>
+                </div>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('user.login') }}">
+                    <h5 class="d-inline">{%trans%}Sign in{%endtrans%}</h5>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    <div class="container pt-5 pb-5">
+        {# One-time system messages called Flash messages #}
+        {% block flash_messages %}
+        {%- with messages = get_flashed_messages(with_categories=true) -%}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% if category=='error' %}
+        {% set category='danger' %}
+        {% endif %}
+        <div class="alert alert-{{category}}">{{ message|safe }}</div>
+        <br>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% endblock %}
+        {% block content %}{% endblock %}
+    </div>
+    <div id="footer-div" class="container footer">
+        <p class="float-left">{{ user_manager.USER_APP_NAME }} {{ user_manager.USER_APP_VERSION }}</p>
+        <p class="float-right">&copy; {{ user_manager.USER_COPYRIGHT_YEAR }} {{ user_manager.USER_CORPORATION_NAME }}
+        </p>
+    </div>
+    {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/7452951778.js" crossorigin="anonymous"></script>
+    {# *** Allow sub-templates to insert extra html to the bottom of the body *** #}
+    {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>

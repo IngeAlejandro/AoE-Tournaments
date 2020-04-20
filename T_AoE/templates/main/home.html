@@ -1,0 +1,53 @@
+{% extends "flask_user_layout.html" %}
+{% block content %}
+<h3>Upcoming Tournaments</h3>
+{% if upcoming_tournaments == [] %}
+<p class="text-center">Oops... No Tournaments Found</p>
+{% else %}
+<div class="card-deck text-center">
+    {% for tournament in upcoming_tournaments %}
+    <a class="card" href="{{ url_for('main.view_tournament', id=tournament.id) }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ tournament.name }}</h5>
+            <p class="card-text"><b>Date:</b> {{ tournament.start_date.strftime('%Y-%m-%d') }} to
+                {{ tournament.end_date.strftime('%Y-%m-%d') }}</p>
+            <p class="card-text"><b>Players:</b> {{ tournament.players_admited }}</p>
+            <p class="card-text"><b>Elo:</b> {{ tournament.elo_limit_low }} - {{ tournament.elo_limit_high }}
+            </p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">Hosted by: {{ tournament.username }}</small>
+            <br>
+            <small class="text-muted">Published
+                at: {{ tournament.published_at.strftime('%Y-%m-%d %H:%M') }}</small>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+<br>
+<h3>Recent Results</h3>
+{% if past_tournaments == [] %}
+<p class="text-center">Oops... No Tournaments Found</p>
+{% else %}
+<div class="card-deck">
+    {% for tournament in past_tournaments %}
+    <a class="card" href="{{ url_for('main.view_tournament', id=tournament.id) }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ tournament.name }}</h5>
+            <p class="card-text"><b>Date:</b> {{ tournament.start_date.strftime('%Y-%m-%d') }} to
+                {{ tournament.end_date.strftime('%Y-%m-%d') }}</p>
+            <p class="card-text"><b>Players:</b> {{ tournament.players_admited }}</p>
+            <p class="card-text"><b>Elo:</b> {{ tournament.elo_limit_low }} - {{ tournament.elo_limit_high }}</p>
+        </div>
+        <div class="card-footer">
+            <div class="float-left"><small class="text-muted">Hosted by: {{ tournament.username }}</small></div>
+            <div class="float-right"><small class="text-muted">Published at:
+                    {{ tournament.published_at.strftime('%Y-%m-%d %H:%M') }}</small></div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

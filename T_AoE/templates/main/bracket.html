@@ -1,0 +1,51 @@
+{% extends "flask_user_layout.html" %}
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h3>{{ tournament.name }}</h3>
+    </div>
+    <div class="col">
+        <h5>{{ tournament.start_date.strftime('%Y/%m/%d %H:%M') }} -
+            {{ tournament.end_date.strftime('%Y/%m/%d %H:%M') }}</h5>
+    </div>
+    <div class="col">
+        <h5>Host: {{ host.username }}</h5>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            {% for round in rounds %}
+            <th><u>Round {{ round.round_number }}</u><br>{{ round.round_type }}</th>
+            {% endfor %}
+            <th><u>Winner</u></th>
+        </tr>
+    </thead>
+    <tbody>
+        <td>{% for user in matches.0.users %}<img src="/static/img/usericons/Icon ({{ user.icon }}).png" alt="User Icon"
+                class="img-fluid" width="64">
+            <p>{{ user.username }}</p> {% endfor %}
+        </td>
+        <td>Matches are not set</td>
+    </tbody>
+</table>
+<br>
+<div class="row">
+    <div class="col">Elo: {{ tournament.elo_limit_low }} - {{ tournament.elo_limit_high }}</div>
+    {% from "flask_user/_macros.html" import render_field, render_submit_field %}
+    <form action="" method="POST" novalidate formnovalidate class="form" role="form">
+        {{ form.hidden_tag() }}
+        <div class="col">{{ render_field(form.password, tabindex=240) }}</div>
+        <div class="col">{{ render_submit_field(form.join, tabindex=270) }}</div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        {% if is_open == False or enrolled == True or user_elo < tournament.elo_limit_low or user_elo > tournament.elo_limit_high %}
+        $("#password").prop('disabled', true);
+        $("input[type=submit]").prop('disabled', true);
+        {% endif %}
+    });
+</script>
+{% endblock %}

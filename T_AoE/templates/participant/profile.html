@@ -1,0 +1,72 @@
+{% extends 'flask_user_layout.html' %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-3">
+        <h3 class=" bg-info text-center">{{ user_data.username }}</h3>
+        <img src="/static/img/usericons/Icon ({{ user_data.icon }}).png" alt="User Icon" class="img-fluid">
+    </div>
+    <div class="col">
+        {% for data in aoe_data %}
+        <div class="row bg-info rounded-right">
+            <div class="col">
+                <h5>Leaderboard Rank: {{data.rank}}</h5>
+                <h5>Elo: {{data.rating}}</h5>
+                <h5>Highest Elo Acquired: {{data.highest_rating}}</h5>
+            </div>
+        </div>
+        <br>
+        <div class="row bg-info rounded-right">
+            <div class="col">
+                <h5>Games: {{data.games}}</h5>
+                <h5>Wins: {{data.wins}}</h5>
+                <h5>Losses: {{data.losses}}</h5>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <h3>{%trans%}Enrolled Tournaments{%endtrans%}</h3>
+        <table id="myTournaments" class="display stripe">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th># Players</th>
+                    <th>Elo</th>
+                    <th>Result</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="text-dark">
+                {% for t in user_tournaments %}
+                <tr>
+                    <td>{{ t.name }}</td>
+                    <td>{{ t.start_date.strftime('%Y-%m-%d %H:%M') }} - {{ t.end_date.strftime('%Y-%m-%d %H:%M') }}
+                    </td>
+                    <td>{{ t.players_admited }}</td>
+                    <td>{{ t.elo_limit_low }} - {{ t.elo_limit_high }}</td>
+                    <td>{{ t.result }}</td>
+                    <td><a href="{{ url_for('main.view_tournament', id=t.id) }}" class="btn btn-info btn-sm"><span
+                        class="fas fa-sitemap"></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#myTournaments').DataTable();
+    });
+</script>
+{% endblock %}

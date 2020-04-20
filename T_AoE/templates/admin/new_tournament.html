@@ -1,0 +1,94 @@
+{% extends 'flask_user_layout.html' %}
+{% block content %}
+{% from "flask_user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
+<h1>{%trans%}New Tournament{%endtrans%}</h1>
+
+<form action="" method="POST" class="form" role="form">
+    <h5>Global Settings</h5>
+    {{ form.hidden_tag() }}
+    {% for field in form %}
+    {% if not field.flags.hidden %}
+    {% if loop.index % 2 != 0 %}
+    <div class="row">
+        <div class="col">{{ render_field(field, tabindex=loop.index*10) }}</div>
+        {% else %}
+        <div class="col">{{ render_field(field, tabindex=loop.index*10) }}</div>
+    </div>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    <h5>Rounds Settings</h5>
+    <div class="row" id="div_rounds">
+        <div class="col">
+            <div class="form-group">
+                <label class="control-label" for="round_1">Round 1</label>
+                <select class="form-control" id="round_1" name="round_1">
+                    <option value="elimination">Elimination</option>
+                    <option value="Best of 3">Best of 3</option>
+                    <option value="Best of 5">Best of 5</option>
+                    <option value="Best of 7">Best of 7</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1">
+            <input type="submit" name="submit_button" class="btn btn-default btn-primary" value="Save" tabindex="110">
+        </div>
+        <div class="col-1">
+            <input type="submit" name="submit_button" class="btn btn-default btn-primary" value="Save & Publish"
+                tabindex="120">
+        </div>
+    </div>
+</form>
+{% endblock %}
+{% block extra_js %}
+<script>
+    var players = document.getElementById("players_admited");
+    var rounds_div = document.getElementById("div_rounds");
+    var options = '<option value="Direct Elimination">Direct Elimination</option><option value="Best of 3">Best of 3</option><option value="Best of 5">Best of 5</option><option value="Best of 7">Best of 7</option>';
+    players.onchange = function () {
+        let number = players.selectedIndex + 1;
+        console.log(number)
+        var selects = '';
+        for (let index = 1; index <= number; index++) {
+            selects += '<div class="col"><div class="form-group"><label class="control-label"  for="round_' + index + '"> Round ' + index + '</label><select class="form-control" required="" id="round_' + index + '" name="round_' + index + '">' + options + '</select></div></div>';
+        }
+        rounds_div.innerHTML = selects;
+    };
+    {% if "/edit_tournament/" in request.path %}
+    $(document).ready(function () {
+        $.getJSON("/../tournament/{{id}}/get_info", function (result) {
+            $.each(result, function (i, data) {
+                $("#name").val(data.name);
+                $("#password").val(data.password);
+                $("#elo_limit_high").val(data.elo_limit_high);
+                $("#elo_limit_low").val(data.elo_limit_low);
+                $("#start_date").val(data.start_date);
+                $("#start_time").val(data.start_time);
+                $("#end_date").val(data.end_date);
+                $("#end_time").val(data.start_time);
+                $("#discord_server_id").val(data.discord_server_id);
+                $("#players_admited option").filter(function () {
+                    return $(this).text() == data.players_admited;
+                }).prop('selected', true);
+                var selects = '';
+                var i = 1;
+                for (index in data.rounds) {
+                    selects += '<div class="col"><div class="form-group"><label class="control-label"  for="' + index + '"> Round ' + i + '</label><select class="form-control" required="" id="' + index + '" name="' + index + '">' + options + '</select></div></div>';
+                    i++;
+                }
+                rounds_div.innerHTML = selects;
+                $.each(data.rounds, function (i, round) {
+                    console.log(round);
+                    $("#" + i + " option").filter(function () {
+                        return $(this).text() == round;
+                    }).prop('selected', true);
+                });
+            });
+        });
+        $("#players_admited").prop('disabled', true);
+    });
+    {% endif %}
+</script>
+{% endblock %}

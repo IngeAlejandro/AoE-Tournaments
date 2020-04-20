@@ -1,0 +1,26 @@
+{% extends "flask_user_layout.html" %}
+{% block content %}
+<div class="card-deck text-center">
+    <div class="card p-5">
+        <a href="{{ url_for('main.admin_setup') }}">
+            <div class="text-center"><i class="fas fa-trophy fa-10x"></i></div>
+            <div class="card-body">
+                <h5 class="card-title">Tournament Host</h5>
+                <p class="card-text">Create and manage your own tournaments. Invite poeple and link your Discord Server
+                </p>
+                <p class="card-text"><small class="text-muted">You won't be able to join tournaments</small></p>
+            </div>
+        </a>
+    </div>
+    <div class="card p-5">
+        <a href="{{ url_for('main.steam_login') }}">
+            <div class="text-center"><i class="fas fa-chess fa-10x"></i></div>
+            <div class="card-body">
+                <h5 class="card-title">Participant</h5>
+                <p class="card-text">Join the community tornaments</p>
+                <p class="card-text"><small class="text-muted">You will need to Link your Steam Account</small></p>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}
