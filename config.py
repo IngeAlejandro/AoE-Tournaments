@@ -9,8 +9,8 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
-    MAIL_USERNAME = 'aguilarfrausto@gmail.com'
-    MAIL_PASSWORD = 'mphkdpdxviqnqjhc'
+    MAIL_USERNAME = 'mail@gmail.com'
+    MAIL_PASSWORD = 'password'
 
     # Flask-User settings
     USER_CORPORATION_NAME = 'Álex Frausto'
